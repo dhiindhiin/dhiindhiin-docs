@@ -891,7 +891,6 @@ def index_page():
 
 
 
-import os as _os
 
 # ── Multi-page Intune Documentation (English) ──
 DOCS_PAGES = ['overview','phase1','phase2','phase3','phase4','phase5','phase6','next-steps','checklist']
@@ -905,11 +904,10 @@ def intune_docs_overview():
 @app.route('/intune-docs/<page>')
 def intune_docs_page(page):
     path = os.path.join(BASE_DIR, 'docs', f'{page}.html')
-    if _os.path.exists(path):
+    if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
             return f.read()
     return 'Page not found', 404
-
 # ── Multi-page Intune Documentation (Arabic) ──
 @app.route('/intune-docs-ar')
 @app.route('/intune-docs-ar/overview')
@@ -920,11 +918,10 @@ def intune_docs_ar_overview():
 @app.route('/intune-docs-ar/<page>')
 def intune_docs_ar_page(page):
     path = os.path.join(BASE_DIR, 'docs-ar', f'{page}.html')
-    if _os.path.exists(path):
+    if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
             return f.read()
     return 'Page not found', 404
-
 if __name__ == '__main__':
     initialize_csv()
     app.run(debug=False, host='0.0.0.0', port=5000)
