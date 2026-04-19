@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .user-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .user-email {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            .user-card {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Directory</h1>
+        <div id="user-list">
+
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Abdalla Alrsheed</span>
+                    <span class="user-email">abdalla.alrsheed@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Bernice Njoroge</span>
+                    <span class="user-email">bernice.njoroge@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Ahmed Sobhy</span>
+                    <span class="user-email">ahmed.sobhy@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Wycliffe Omwenga</span>
+                    <span class="user-email">wycliffe.omwenga@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Yassin Omer</span>
+                    <span class="user-email">yassin.omer@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">DhiinDhiin Co</span>
+                    <span class="user-email">info@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Ahmed Khalid</span>
+                    <span class="user-email">ahmed.khalid@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Aaron Kibet</span>
+                    <span class="user-email">aaron.kibet@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Mohamed Afify</span>
+                    <span class="user-email">mohamed.afify@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Martine Obiero</span>
+                    <span class="user-email">martine.obiero@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Alsadig Alsadig</span>
+                    <span class="user-email">alsadig@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Mostafa CAO</span>
+                    <span class="user-email">mostafa.cao@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Matilda Nthenya</span>
+                    <span class="user-email">matilda.nthenya@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Dhiin Dhiin</span>
+                    <span class="user-email">admin@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Phoebe Gitau</span>
+                    <span class="user-email">phoebe.gitau@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Pius Mutuku</span>
+                    <span class="user-email">pius.mutuku@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Tax Account</span>
+                    <span class="user-email">tax.account@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Benjamin. Ngao</span>
+                    <span class="user-email">benjamin.ngao@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Caroline Remi</span>
+                    <span class="user-email">caroline.remi@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">QC Lab</span>
+                    <span class="user-email">qc.lab@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Almoatazbillah Emad</span>
+                    <span class="user-email">almoatazbillah.emad@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Khadija Issa</span>
+                    <span class="user-email">khadija.issa@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Allaeldin Adam</span>
+                    <span class="user-email">allaeldin.adam@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Hamid Chairman</span>
+                    <span class="user-email">hamid.chairman@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Cynthia Achieng</span>
+                    <span class="user-email">cynthia.achieng@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">NARIMAAN SAMIR</span>
+                    <span class="user-email">narimaan.samir@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Ramadhan Omar</span>
+                    <span class="user-email">ramadhan.omar@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Maaz Mukhtar</span>
+                    <span class="user-email">maaz.mukhtar@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Human Resources</span>
+                    <span class="user-email">hr@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Mohamed CEO</span>
+                    <span class="user-email">mohamed.ceo@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Joel Kivaa</span>
+                    <span class="user-email">joel.kivaa@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Marketing Team</span>
+                    <span class="user-email">marketing@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="user-card">
+                <div class="user-info">
+                    <span class="user-name">Graphic Design</span>
+                    <span class="user-email">graphicdesign@dhiindhiin.net</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

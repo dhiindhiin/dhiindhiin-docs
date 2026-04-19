@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Summary Report - DhiinDhiin</title>
+    <style>
+        :root {
+            --primary-gold: #d4a574;
+            --dark-gold: #b8860b;
+            --text-dark: #1a1a1a;
+            --text-light: #4a4a4a;
+            --bg-light: #faf8f3;
+            --card-bg: #ffffff;
+            --border-color: #e8dcc8;
+            --accent-gold: #c9a961;
+            --accent-dark: #2c2c2c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(180, 134, 11, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-top: 4px solid var(--primary-gold);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .header-content h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        .header p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .save-btn, .reset-btn {
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--primary-gold) 0%, var(--dark-gold) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(180, 134, 11, 0.3);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(180, 134, 11, 0.4);
+            background: linear-gradient(135deg, var(--dark-gold) 0%, #9a6f0a 100%);
+        }
+
+        .reset-btn {
+            background: #f0f0f0;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .reset-btn:hover {
+            background: #e8e8e8;
+            transform: translateY(-2px);
+        }
+
+        .save-btn:active, .reset-btn:active {
+            transform: translateY(0);
+        }
+
+        .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-gold);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .notification.hide {
+            animation: slideOut 0.3s ease forwards;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(180, 134, 11, 0.1);
+            text-align: center;
+            border-left: 4px solid var(--primary-gold);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(180, 134, 11, 0.15);
+        }
+
+        .stat-card.active {
+            border-left-color: var(--dark-gold);
+        }
+
+        .stat-card.domain {
+            border-left-color: var(--accent-gold);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-gold);
+            margin-bottom: 5px;
+        }
+
+        .stat-card.active .stat-number {
+            color: var(--dark-gold);
+        }
+
+        .stat-card.domain .stat-number {
+            color: var(--accent-gold);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(180, 134, 11, 0.1);
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            border-bottom: 3px solid var(--primary-gold);
+            padding-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .domain-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .domain-table th,
+        .domain-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .domain-table th {
+            background: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
+            font-weight: 600;
+            color: var(--text-dark);
+            border-bottom: 2px solid var(--primary-gold);
+        }
+
+        .domain-table tr:hover {
+            background-color: #faf8f3;
+        }
+
+        .user-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            gap: 15px;
+            transition: all 0.2s ease;
+        }
+
+        .user-row:hover {
+            background-color: #faf8f3;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .user-email {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-active {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-inactive {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, var(--primary-gold) 0%, var(--dark-gold) 100%);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--primary-gold);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 30px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .logo-section {
+                width: 100%;
+            }
+
+            .logo {
+                height: 50px;
+            }
+
+            .header-content h1 {
+                font-size: 1.5rem;
+            }
+
+            .button-group {
+                width: 100%;
+            }
+
+            .button-group button {
+                flex: 1;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .section h2 {
+                font-size: 1.25rem;
+            }
+
+            .domain-table th,
+            .domain-table td {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .user-row {
+                padding: 10px;
+                flex-wrap: wrap;
+            }
+
+            .user-info {
+                width: 100%;
+            }
+
+            .user-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .notification {
+                right: 10px;
+                left: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .logo {
+                height: 45px;
+            }
+
+            .header-content h1 {
+                font-size: 1.25rem;
+            }
+
+            .section {
+                padding: 12px;
+            }
+
+            .domain-table th,
+            .domain-table td {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+
+            .user-row {
+                padding: 8px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .user-controls {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .switch {
+                width: 45px;
+                height: 24px;
+            }
+
+            .slider:before {
+                height: 16px;
+                width: 16px;
+            }
+
+            input:checked + .slider:before {
+                transform: translateX(21px);
+            }
+
+            .button-group {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .button-group button {
+                width: 100%;
+                padding: 12px 16px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="notification" class="notification"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <img src="logo.png" alt="DhiinDhiin Logo" class="logo">
+                <div class="header-content">
+                    <h1>User Summary Report</h1>
+                    <p>Generated on April 4, 2026 | User Management System</p>
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="save-btn" id="save-csv-btn">💾 Save to CSV</button>
+                <button class="reset-btn" id="reset-btn">🔄 Reset All</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">33</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-card active">
+                <div class="stat-number" id="active-count">33</div>
+                <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-card domain">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Email Domains</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Domain Distribution</h2>
+            <table class="domain-table">
+                <thead>
+                    <tr>
+                        <th>Domain</th>
+                        <th>User Count</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>dhiindhiin.net</td>
+                        <td>33</td>
+                        <td>100.0%</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>User Directory</h2>
+            <div id="user-list">
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Abdalla Alrsheed</div>
+                        <div class="user-email">abdalla.alrsheed@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="0">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="0" data-first-name="Abdalla" data-last-name="Alrsheed" data-email="abdalla.alrsheed@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Bernice Njoroge</div>
+                        <div class="user-email">bernice.njoroge@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="1">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="1" data-first-name="Bernice" data-last-name="Njoroge" data-email="bernice.njoroge@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Ahmed Sobhy</div>
+                        <div class="user-email">ahmed.sobhy@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="2">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="2" data-first-name="Ahmed" data-last-name="Sobhy" data-email="ahmed.sobhy@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Wycliffe Omwenga</div>
+                        <div class="user-email">wycliffe.omwenga@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="3">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="3" data-first-name="Wycliffe" data-last-name="Omwenga" data-email="wycliffe.omwenga@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Yassin Omer</div>
+                        <div class="user-email">yassin.omer@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="4">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="4" data-first-name="Yassin" data-last-name="Omer" data-email="yassin.omer@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">DhiinDhiin Co</div>
+                        <div class="user-email">info@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="5">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="5" data-first-name="DhiinDhiin" data-last-name="Co" data-email="info@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Ahmed Khalid</div>
+                        <div class="user-email">ahmed.khalid@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="6">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="6" data-first-name="Ahmed" data-last-name="Khalid" data-email="ahmed.khalid@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Aaron Kibet</div>
+                        <div class="user-email">aaron.kibet@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="7">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="7" data-first-name="Aaron" data-last-name="Kibet" data-email="aaron.kibet@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Mohamed Afify</div>
+                        <div class="user-email">mohamed.afify@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="8">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="8" data-first-name="Mohamed" data-last-name="Afify" data-email="mohamed.afify@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Martine Obiero</div>
+                        <div class="user-email">martine.obiero@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="9">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="9" data-first-name="Martine" data-last-name="Obiero" data-email="martine.obiero@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Alsadig Alsadig</div>
+                        <div class="user-email">alsadig@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="10">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="10" data-first-name="Alsadig" data-last-name="Alsadig" data-email="alsadig@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Mostafa CAO</div>
+                        <div class="user-email">mostafa.cao@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="11">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="11" data-first-name="Mostafa" data-last-name="CAO" data-email="mostafa.cao@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Matilda Nthenya</div>
+                        <div class="user-email">matilda.nthenya@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="12">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="12" data-first-name="Matilda" data-last-name="Nthenya" data-email="matilda.nthenya@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Dhiin Dhiin</div>
+                        <div class="user-email">admin@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="13">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="13" data-first-name="Dhiin" data-last-name="Dhiin" data-email="admin@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Phoebe Gitau</div>
+                        <div class="user-email">phoebe.gitau@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="14">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="14" data-first-name="Phoebe" data-last-name="Gitau" data-email="phoebe.gitau@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Pius Mutuku</div>
+                        <div class="user-email">pius.mutuku@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="15">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="15" data-first-name="Pius" data-last-name="Mutuku" data-email="pius.mutuku@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Tax Account</div>
+                        <div class="user-email">tax.account@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="16">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="16" data-first-name="Tax" data-last-name="Account" data-email="tax.account@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Benjamin. Ngao</div>
+                        <div class="user-email">benjamin.ngao@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="17">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="17" data-first-name="Benjamin." data-last-name="Ngao" data-email="benjamin.ngao@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Caroline Remi</div>
+                        <div class="user-email">caroline.remi@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="18">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="18" data-first-name="Caroline" data-last-name="Remi" data-email="caroline.remi@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">QC Lab</div>
+                        <div class="user-email">qc.lab@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="19">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="19" data-first-name="QC" data-last-name="Lab" data-email="qc.lab@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Almoatazbillah Emad</div>
+                        <div class="user-email">almoatazbillah.emad@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="20">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="20" data-first-name="Almoatazbillah" data-last-name="Emad" data-email="almoatazbillah.emad@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Khadija Issa</div>
+                        <div class="user-email">khadija.issa@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="21">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="21" data-first-name="Khadija" data-last-name="Issa" data-email="khadija.issa@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Allaeldin Adam</div>
+                        <div class="user-email">allaeldin.adam@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="22">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="22" data-first-name="Allaeldin" data-last-name="Adam" data-email="allaeldin.adam@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Hamid Chairman</div>
+                        <div class="user-email">hamid.chairman@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="23">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="23" data-first-name="Hamid" data-last-name="Chairman" data-email="hamid.chairman@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Cynthia Achieng</div>
+                        <div class="user-email">cynthia.achieng@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="24">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="24" data-first-name="Cynthia" data-last-name="Achieng" data-email="cynthia.achieng@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">NARIMAAN SAMIR</div>
+                        <div class="user-email">narimaan.samir@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="25">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="25" data-first-name="NARIMAAN" data-last-name="SAMIR" data-email="narimaan.samir@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Ramadhan Omar</div>
+                        <div class="user-email">ramadhan.omar@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="26">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="26" data-first-name="Ramadhan" data-last-name="Omar" data-email="ramadhan.omar@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Maaz Mukhtar</div>
+                        <div class="user-email">maaz.mukhtar@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="27">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="27" data-first-name="Maaz" data-last-name="Mukhtar" data-email="maaz.mukhtar@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Human Resources</div>
+                        <div class="user-email">hr@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="28">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="28" data-first-name="Human" data-last-name="Resources" data-email="hr@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Mohamed CEO</div>
+                        <div class="user-email">mohamed.ceo@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="29">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="29" data-first-name="Mohamed" data-last-name="CEO" data-email="mohamed.ceo@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Joel Kivaa</div>
+                        <div class="user-email">joel.kivaa@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="30">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="30" data-first-name="Joel" data-last-name="Kivaa" data-email="joel.kivaa@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Marketing Team</div>
+                        <div class="user-email">marketing@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="31">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="31" data-first-name="Marketing" data-last-name="Team" data-email="marketing@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="user-row">
+                    <div class="user-info">
+                        <div class="user-name">Graphic Design</div>
+                        <div class="user-email">graphicdesign@dhiindhiin.net</div>
+                    </div>
+                    <div class="user-controls">
+                        <span class="status-badge status-active" data-user-id="32">Active</span>
+                        <label class="switch">
+                            <input type="checkbox" checked data-user-id="32" data-first-name="Graphic" data-last-name="Design" data-email="graphicdesign@dhiindhiin.net">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>This report was automatically generated based on user data. Toggle switches to manage user status and click "Save to CSV" to download the updated data. Your changes are automatically saved to your browser.</p>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'dhiindhiin_user_statuses';
+
+        // Load saved statuses from local storage on page load
+        function loadSavedStatuses() {
+            const savedStatuses = localStorage.getItem(STORAGE_KEY);
+            if (savedStatuses) {
+                try {
+                    const statuses = JSON.parse(savedStatuses);
+                    document.querySelectorAll('.switch input').forEach(checkbox => {
+                        const userId = checkbox.getAttribute('data-user-id');
+                        if (statuses.hasOwnProperty(userId)) {
+                            checkbox.checked = statuses[userId];
+                            updateStatusBadge(userId, statuses[userId]);
+                        }
+                    });
+                    updateActiveCount();
+                } catch (e) {
+                    console.error('Error loading saved statuses:', e);
+                }
+            }
+        }
+
+        // Update status badge based on checkbox state
+        function updateStatusBadge(userId, isActive) {
+            const statusBadge = document.querySelector(`.status-badge[data-user-id="${userId}"]`);
+            if (statusBadge) {
+                if (isActive) {
+                    statusBadge.textContent = 'Active';
+                    statusBadge.classList.remove('status-inactive');
+                    statusBadge.classList.add('status-active');
+                } else {
+                    statusBadge.textContent = 'Inactive';
+                    statusBadge.classList.remove('status-active');
+                    statusBadge.classList.add('status-inactive');
+                }
+            }
+        }
+
+        // Save statuses to local storage
+        function saveStatuses() {
+            const statuses = {};
+            document.querySelectorAll('.switch input').forEach(checkbox => {
+                const userId = checkbox.getAttribute('data-user-id');
+                statuses[userId] = checkbox.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(statuses));
+        }
+
+        // Handle toggle switch changes
+        document.querySelectorAll('.switch input').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const userId = this.getAttribute('data-user-id');
+                const isActive = this.checked;
+                
+                // Update the badge immediately
+                updateStatusBadge(userId, isActive);
+                
+                // Update active count and save to local storage
+                updateActiveCount();
+                saveStatuses();
+                showNotification('✓ Changes saved to your browser');
+            });
+        });
+
+        // Update the active count in the stats
+        function updateActiveCount() {
+            const activeCount = document.querySelectorAll('.switch input:checked').length;
+            document.getElementById('active-count').textContent = activeCount;
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.remove('hide');
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.add('hide');
+                setTimeout(() => {
+                    notification.classList.remove('show', 'hide');
+                }, 300);
+            }, 2000);
+        }
+
+        // Reset all statuses
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to reset all users to Active? This cannot be undone.')) {
+                document.querySelectorAll('.switch input').forEach(checkbox => {
+                    checkbox.checked = true;
+                    const userId = checkbox.getAttribute('data-user-id');
+                    updateStatusBadge(userId, true);
+                });
+                updateActiveCount();
+                saveStatuses();
+                showNotification('✓ All users reset to Active');
+            }
+        });
+
+        // Save to CSV functionality
+        document.getElementById('save-csv-btn').addEventListener('click', function() {
+            const button = this;
+            button.disabled = true;
+            button.textContent = '⏳ Generating...';
+
+            // Collect user data with current status
+            const csvData = [];
+            csvData.push('First Name [Required],Last Name [Required],Email Address [Required],Active');
+
+            document.querySelectorAll('.switch input').forEach(checkbox => {
+                const firstName = checkbox.getAttribute('data-first-name');
+                const lastName = checkbox.getAttribute('data-last-name');
+                const email = checkbox.getAttribute('data-email');
+                const isActive = checkbox.checked ? 'true' : 'false';
+                
+                // Escape CSV fields that contain commas or quotes
+                const escapedFirstName = escapeCSVField(firstName);
+                const escapedLastName = escapeCSVField(lastName);
+                const escapedEmail = escapeCSVField(email);
+                
+                csvData.push(`${escapedFirstName},${escapedLastName},${escapedEmail},${isActive}`);
+            });
+
+            // Create blob and download
+            const csvContent = csvData.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `user_status_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Reset button
+            setTimeout(() => {
+                button.disabled = false;
+                button.textContent = '💾 Save to CSV';
+                showNotification('✓ CSV file downloaded');
+            }, 500);
+        });
+
+        // Helper function to escape CSV fields
+        function escapeCSVField(field) {
+            if (field.includes(',') || field.includes('"') || field.includes('\n')) {
+                return '"' + field.replace(/"/g, '""') + '"';
+            }
+            return field;
+        }
+
+        // Load saved statuses when page loads
+        window.addEventListener('DOMContentLoaded', loadSavedStatuses);
+    </script>
+</body>
+</html>
