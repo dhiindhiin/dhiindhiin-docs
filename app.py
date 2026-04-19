@@ -102,9 +102,18 @@ def escape_csv_field(field):
         return '"' + field.replace('"', '""') + '"'
     return field
 
-# Serve the main webpage
+# Serve the user management page
+@app.route('/users', methods=['GET'])
+def users_page():
+    return index_page()
+
+# Root redirects to M365 docs
 @app.route('/', methods=['GET'])
 def index():
+    from flask import redirect
+    return redirect('/intune-docs')
+
+def index_page():
     users = load_users()
     total_users = len(users)
     domains = [user['email'].split('@')[-1] for user in users]
